@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: AppTheme) => ({
   root: {
     background: theme.palette.type === "dark" ? "linear-gradient(#13222C, #002A34)" : "#5a6f90",
     // border: theme.palette.border,
-    padding: theme.spacing(4, 6),
+    padding: theme.spacing(0, 6),
     borderRadius: 12,
     // boxShadow: theme.palette.cardBoxShadow,
     "& .MuiOutlinedInput-input": {
@@ -141,7 +141,7 @@ const PoolsListing: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <Box {...rest} className={cls(classes.root, className)} mt={6} mb={2}>
+    <Box {...rest} className={cls(classes.root, className)} mt={0} mb={2}>
       <Box display="flex" justifyContent="space-between" mb={2} className={classes.header}>
     INFLUENCERS ({otherTokens.length})
     {/* <Text variant="h2" margin={2}>Influencers ({registeredTokens.length})</Text> */}

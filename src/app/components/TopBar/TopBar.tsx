@@ -15,8 +15,10 @@ const useStyles = makeStyles(theme => ({
     position: "fixed",
   },
   toolBar: {
-    padding: 0,
-    borderBottom: "1px solid transparent",
+    paddingLeft: "5%",
+    height: "10vh",
+    boxSizing: "border-box",
+    boxShadow: "inset 0 -1px #757784",
     borderImage: theme.palette.type === "dark" 
                   ? "linear-gradient(to left, #ffffff 1%, #00FFB0  50%, #ffffff 100%) 0 0 100% 0/0 0 1px 0 stretch"
                   : "",

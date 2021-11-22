@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: AppTheme) => ({
     flex: 1,
     display: "flex",
     flexDirection: "row",
+    paddingTop: "10vh",
     [theme.breakpoints.down("sm")]: {
       display: "block",
     },
