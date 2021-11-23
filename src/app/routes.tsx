@@ -102,6 +102,11 @@ const routes: RouteConfig[] = [
         component: lazy(() => import("./views/main/Pool")),
       },
       {
+        path: "/sponsor",
+        exact: true,
+        component: lazy(() => import("./views/main/Sponsor")),
+      },
+      {
         path: "/bridge",
         exact: true,
         component: lazy(() => import("./views/main/Bridge")),

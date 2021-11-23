@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import cls from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import { actions } from "app/store";
-import { PoolType, RootState } from "app/store/types";
+import { SPoolType, RootState } from "app/store/types";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -40,32 +40,32 @@ const PoolToggleButton: React.FC<ButtonGroupProps> = (props: ButtonGroupProps) =
   const { children, className, ...rest } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
-  const poolType = useSelector<RootState, PoolType>(state => state.layout.showPoolType);
+  const spoolType = useSelector<RootState, SPoolType>(state => state.layout.showSPoolType);
 
-  const onTypeChange = (type: PoolType) => {
-    if (type !== poolType)
-      dispatch(actions.Layout.showPoolType(type));
+  const onTypeChange = (type: SPoolType) => {
+    if (type !== spoolType)
+      dispatch(actions.Layout.showSPoolType(type));
   };
 
   return (
     <ButtonGroup {...rest} color="secondary" className={cls(classes.root, className)}>
       <Button
-        onClick={() => onTypeChange("add")}
-        variant={poolType === "add" ? "contained" : "outlined"}
+        onClick={() => onTypeChange("addSponsor")}
+        variant={spoolType === "addSponsor" ? "contained" : "outlined"}
         className={classes.tab}>
-        Add Liquidity
+        Add Sponsor
       </Button>
     {/* <Button
         onClick={() => onTypeChange("manage")}
-        variant={poolType === "manage" ? "contained" : "outlined"}
+        variant={spoolType === "manage" ? "contained" : "outlined"}
         className={classes.tab}>
         Manage
       </Button> */}
       <Button
-        onClick={() => onTypeChange("remove")}
-        variant={poolType === "remove" ? "contained" : "outlined"}
+        onClick={() => onTypeChange("removeSponsor")}
+        variant={spoolType === "removeSponsor" ? "contained" : "outlined"}
         className={classes.tab}>
-        Remove Liquidity
+        Remove Sponsor
       </Button>
     </ButtonGroup>
   );
