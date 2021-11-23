@@ -18,6 +18,7 @@ const initial_state: LayoutState = {
   liquidityEarnHidden: false,
   notification: undefined,
   showPoolType: "add",
+  showSPoolType: "addSponsor",
   loadingTasks: {},
   tasksRegistry: {},
 };
@@ -35,6 +36,11 @@ const reducer = (state: LayoutState = initial_state, action: any): LayoutState =
         ...state,
         showPoolType: action.poolType,
       };
+    case LayoutActionTypes.SHOW_SPOOL_TYPE:
+      return {
+        ...state,
+        showSPoolType: action.spoolType,
+      };  
     case LayoutActionTypes.SHOW_ADVANCED_SETTING:
       return {
         ...state,

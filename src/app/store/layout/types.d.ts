@@ -27,10 +27,12 @@ export interface LayoutState {
   expandNavDrawer: boolean;
   liquidityEarnHidden: boolean;
   showPoolType: PoolType;
+  showSPoolType: SPoolType;
   notification?: FormNotification;
   loadingTasks: LoadingTasks;
   tasksRegistry: any,
 };
 
-export type PoolType = "add" | "manage" | "remove";
+export type PoolType = "add" | "manage" | "remove" | "addSponsor" | "removeSponsor";
+export type SPoolType = "addSponsor" | "removeSponsor";
 export type OpenCloseState = "open" | "close";

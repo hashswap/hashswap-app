@@ -5,15 +5,13 @@ import { fromBech32Address } from "@zilliqa-js/crypto";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import { useDispatch, useSelector } from "react-redux";
-import { HEX } from "hashswap-zilliqa-js-sdk/lib/constants";
+import { CONTRACTS } from "zilswap-sdk/lib/constants";
 import { ZilswapConnector, toBasisPoints } from "core/zilswap";
-import { CurrencyInput, FancyButton } from "app/components";
-//import { CurrencyInput, FancyButton, ProportionSelect } from "app/components";
+import { CurrencyInput, FancyButton, ProportionSelect } from "app/components";
 import { actions } from "app/store";
 import { PoolFormState, RootState, SwapFormState, TokenInfo, TokenState, WalletObservedTx, WalletState } from "app/store/types";
 import { bnOrZero, useAsyncTask, useNetwork, useToaster } from "app/utils";
-import { BIG_ZERO, BIG_ONE, HUSD_ADDRESS } from "app/utils/constants";
-//import { BIG_ZERO, ZIL_ADDRESS } from "app/utils/constants";
+import { BIG_ZERO, ZIL_ADDRESS } from "app/utils/constants";
 import { AppTheme } from "app/theme/types";
 import PoolDetail from "../PoolDetail";
 import PoolIcon from "../PoolIcon";
@@ -35,13 +33,9 @@ const useStyles = makeStyles((theme: AppTheme) => ({
     marginBottom: 4,
   },
   actionButton: {
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(4),
     marginBottom: theme.spacing(4),
-    height: 46,
-    [theme.breakpoints.down("sm")]: {
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(3),
-    },
+    height: 46
   },
   keyValueLabel: {
     marginTop: theme.spacing(1),
@@ -56,18 +50,17 @@ const useStyles = makeStyles((theme: AppTheme) => ({
     color: theme.palette.primary.main
   },
   poolIcon: {
-    margin: 24,
-    marginTop: 0,
+    margin: 12,
+    marginTop: -30,
     marginBottom: 0,
     [theme.breakpoints.down("sm")]: {
-      //marginTop: -33
+      marginTop: -33
     },
   },
   poolIconBox: {
-    padding: theme.spacing(1),
     justifyContent: "center",
     [theme.breakpoints.down("sm")]: {
-      //justifyContent: "flex-start"
+      justifyContent: "flex-start"
     },
   }
 }));
@@ -83,9 +76,7 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
   const [formState, setFormState] = useState<typeof initialFormState>(initialFormState);
   const [currencyDialogOverride, setCurrencyDialogOverride] = useState<boolean>(false);
   const [runAddLiquidity, loading, error, clearPoolError] = useAsyncTask("poolAddLiquidity");
-  const [runApproveTxHusd, loadingApproveTxHusd, errorApproveTxHusd, clearApproveErrorHusd] = useAsyncTask("approveTxHusd");
-  const [runApproveTxToken, loadingApproveTxToken, errorApproveTxToken, clearApproveErrorToken] = useAsyncTask("approveTxToken");
-  // const [runApproveTx, loadingApproveTx, errorApproveTx, clearApproveError] = useAsyncTask("approveTx");
+  const [runApproveTx, loadingApproveTx, errorApproveTx, clearApproveError] = useAsyncTask("approveTx");
   const dispatch = useDispatch();
   const network = useNetwork();
   const poolFormState = useSelector<RootState, PoolFormState>(state => state.pool);
@@ -118,7 +109,7 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
   }, [network]);
 
 
-/*  const onPercentage = (percentage: number) => {
+  const onPercentage = (percentage: number) => {
     if (!poolToken) return;
 
     const balance = new BigNumber(poolToken.balance?.toString() || 0);
@@ -126,7 +117,6 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
     const netGasAmount = poolToken.isZil ? ZilswapConnector.adjustedForGas(intendedAmount, balance) : intendedAmount;
     onTokenChange(netGasAmount.shiftedBy(-poolToken.decimals).toString());
   };
-*/
 
   const onPoolChange = (token: TokenInfo) => {
     if (token.symbol === "ZIL") return;
@@ -141,8 +131,7 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
       if (bnZilAmount.isNegative() || bnZilAmount.isNaN() || !bnZilAmount.isFinite())
         bnZilAmount = BIG_ZERO;
 
-      const zilToken = tokenState.tokens[HUSD_ADDRESS];
-      //const zilToken = tokenState.tokens[ZIL_ADDRESS];
+      const zilToken = tokenState.tokens[ZIL_ADDRESS];
       const rate = poolToken.pool?.exchangeRate.shiftedBy(poolToken!.decimals - zilToken.decimals);
       let bnTokenAmount = bnZilAmount.div(rate || 1).decimalPlaces(poolToken.decimals);
       const tokenAmount = bnTokenAmount.toString();
@@ -165,8 +154,6 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
     }
   };
 
-  const zilToken = tokenState.tokens[HUSD_ADDRESS];
-
   const onTokenChange = (amount: string = "0") => {
     if (poolToken) {
       const tokenAmount = amount;
@@ -174,7 +161,7 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
       if (bnTokenAmount.isNegative() || bnTokenAmount.isNaN() || !bnTokenAmount.isFinite())
         bnTokenAmount = BIG_ZERO;
 
-      // const zilToken = tokenState.tokens[HUSD_ADDRESS];
+      const zilToken = tokenState.tokens[ZIL_ADDRESS];
       const rate = poolToken.pool?.exchangeRate.shiftedBy(poolToken!.decimals - zilToken.decimals);
       let bnZilAmount = bnTokenAmount.times(rate || 1).decimalPlaces(zilToken?.decimals || 12);
       const zilAmount = bnZilAmount.toString();
@@ -202,15 +189,14 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
     if (poolFormState.addTokenAmount.isZero()) return;
     if (loading) return;
 
-    clearApproveErrorToken();
-    clearApproveErrorHusd();
+    clearApproveError();
 
     runAddLiquidity(async () => {
       const tokenAddress = poolToken.address;
       const { addTokenAmount, addZilAmount } = poolFormState;
       const { slippage } = swapFormState;
       const tokenBalance = bnOrZero(poolToken!.balance).shiftedBy(-poolToken.decimals);
-      const zilToken = tokenState.tokens[HUSD_ADDRESS];
+      const zilToken = tokenState.tokens[ZIL_ADDRESS];
       const zilBalance = bnOrZero(zilToken!.balance).shiftedBy(-zilToken.decimals);
 
       if (addTokenAmount.gt(tokenBalance)) {
@@ -221,8 +207,8 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
         throw new Error(`Insufficient ZIL balance.`)
       }
 
-      if (addZilAmount.lt(100)) {
-        throw new Error('Minimum contribution is 100 HASH.')
+      if (addZilAmount.lt(1000)) {
+        throw new Error('Minimum contribution is 1000 ZILs.')
       }
 
       if (zilBalance.minus(addZilAmount).lt(5)) {
@@ -253,65 +239,6 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
     });
   };
 
-  const onApproveTxHusd = () => {
-    if (!poolToken) return;
-    if (poolFormState.addZilAmount.isZero()) return;
-    if (loading) return;
-
-    clearApproveErrorToken();
-    clearPoolError();
-
-    runApproveTxHusd(async () => {
-      const tokenAddress = zilToken.address;
-      const { addZilAmount } = poolFormState;
-      const observedTx = await ZilswapConnector.approveTokenTransfer({
-        tokenAmount: addZilAmount.shiftedBy(zilToken!.decimals),
-        tokenID: tokenAddress,
-      });
-      const walletObservedTx: WalletObservedTx = {
-        ...observedTx!,
-        address: walletState.wallet?.addressInfo.bech32 || "",
-        network,
-      };
-
-      if (!observedTx)
-        throw new Error("Allowance already sufficient for specified amount");
-      dispatch(actions.Transaction.observe({ observedTx: walletObservedTx }));
-      toaster("Submitted", { hash: walletObservedTx.hash });
-    });
-  };
-
-  const onApproveTxToken = () => {
-    if (!poolToken) return;
-    if (poolFormState.addTokenAmount.isZero()) return;
-    if (loading) return;
-
-    clearApproveErrorHusd();
-    clearPoolError();
-
-    runApproveTxToken(async () => {
-      const tokenAddress = poolToken.address;
-      const { addTokenAmount } = poolFormState;
-      const observedTx = await ZilswapConnector.approveTokenTransfer({
-        tokenAmount: addTokenAmount.plus(BIG_ONE).shiftedBy(poolToken!.decimals),
-        tokenID: tokenAddress,
-      });
-      const walletObservedTx: WalletObservedTx = {
-        ...observedTx!,
-        address: walletState.wallet?.addressInfo.bech32 || "",
-        network,
-      };
-
-      if (!observedTx)
-        throw new Error("Allowance already sufficient for specified amount");
-      dispatch(actions.Transaction.observe({ observedTx: walletObservedTx }));
-      toaster("Submitted", { hash: walletObservedTx.hash });
-    });
-  };
-
-
-
-/*
   const onApproveTx = () => {
     if (!poolToken) return;
     if (poolFormState.addTokenAmount.isZero()) return;
@@ -338,7 +265,6 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
       toaster("Submitted", { hash: walletObservedTx.hash });
     });
   };
-*/
 
   const onDoneEditing = () => {
     setFormState({
@@ -347,34 +273,13 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
     });
   };
 
-  const zilswapContractAddress = HEX[network];
+  const zilswapContractAddress = CONTRACTS[network];
   const byte20ContractAddress = fromBech32Address(zilswapContractAddress).toLowerCase();
-
-  let showTxApproveToken = false;
+  let showTxApprove = false;
   if (poolToken) {
     const addTokenUnitlessAmount = poolFormState.addTokenAmount.shiftedBy(poolToken.decimals);
-    showTxApproveToken = bnOrZero(poolToken.allowances?.[byte20ContractAddress]).comparedTo(addTokenUnitlessAmount) < 0
+    showTxApprove = bnOrZero(poolToken.allowances?.[byte20ContractAddress]).comparedTo(addTokenUnitlessAmount) < 0
   }
-
-  let showTxApproveHusd = false;
-  if(!showTxApproveHusd && zilToken) {
-    const addZilUnitlessAmount = poolFormState.addZilAmount.shiftedBy(zilToken.decimals);
-    showTxApproveHusd = bnOrZero(zilToken.allowances?.[byte20ContractAddress]).comparedTo(addZilUnitlessAmount) < 0
-  }
-
-  const showTxApprove = showTxApproveToken || showTxApproveHusd ? true : false;
-  let contentTxApprove = "APPROVE TOKEN"
-  let errorApproveTx = errorApproveTxToken;
-  let loadingApproveTx = loadingApproveTxToken;
-  let onApproveTx = onApproveTxToken;
-
-  if(showTxApproveHusd){
-    contentTxApprove = "APPROVE HUSD"
-    errorApproveTx = errorApproveTxHusd;
-    loadingApproveTx = loadingApproveTxHusd;
-    onApproveTx = onApproveTxHusd;
-  }
-
 
   return (
     <Box display="flex" flexDirection="column" {...rest} className={clsx(classes.root, className)}>
@@ -391,13 +296,13 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
           onCurrencyChange={onPoolChange}
           dialogOpts={{ hideZil: true }} />
 
-    {/* <Box display="flex" justifyContent="flex-end">
+        <Box display="flex" justifyContent="flex-end">
           <ProportionSelect
             color="primary"
             size="small"
             className={classes.proportionSelect}
             onSelectProp={onPercentage} />
-        </Box> */}
+        </Box>
 
         <Box display="flex" className={classes.poolIconBox}>
           <PoolIcon type="plus" className={classes.poolIcon} />
@@ -405,7 +310,7 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
 
         <CurrencyInput fixedToken
           label="Deposit"
-          token={tokenState.tokens[HUSD_ADDRESS]}
+          token={tokenState.tokens[ZIL_ADDRESS]}
           amount={formState.zilAmount}
           disabled={!poolToken}
           onEditorBlur={onDoneEditing}
@@ -417,7 +322,6 @@ const PoolDeposit: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props: any)
           loading={loading}
           walletRequired
           showTxApprove={showTxApprove}
-          contentTxApprove = {contentTxApprove}
           loadingTxApprove={loadingApproveTx}
           onClickTxApprove={onApproveTx}
           className={classes.actionButton}

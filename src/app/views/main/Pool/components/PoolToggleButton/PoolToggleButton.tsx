@@ -5,17 +5,17 @@ import cls from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import { actions } from "app/store";
 import { PoolType, RootState } from "app/store/types";
-import { AppTheme } from "app/theme/types";
 
-const useStyles = makeStyles((theme: AppTheme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
+    width: "100%",
   },
   tab: {
     borderRadius: 12,
-    width: 90,
+    width: "100%",
     padding: theme.spacing(1.5, 4),
     [theme.breakpoints.down("xs")]: {
-      width: 76,
+      width: "auto",
       padding: theme.spacing(1, 2),
       "& .MuiButton-label": {
         fontSize: "14px",
@@ -24,15 +24,18 @@ const useStyles = makeStyles((theme: AppTheme) => ({
     '&:not(:first-child)': {
       borderTopLeftRadius: 0,
       borderBottomLeftRadius: 0,
-      border: theme.palette.border,
+      border: 0
+      // border: theme.palette.type === "dark" ? "1px solid #29475A" : "1px solid #D2E5DF",
     },
     '&:not(:last-child)': {
       borderTopRightRadius: 0,
       borderBottomRightRadius: 0,
-      border: theme.palette.border,
+      border: 0
+      // border: theme.palette.type === "dark" ? "1px solid #29475A" : "1px solid #D2E5DF",
     },
   },
 }));
+
 const PoolToggleButton: React.FC<ButtonGroupProps> = (props: ButtonGroupProps) => {
   const { children, className, ...rest } = props;
   const classes = useStyles();
@@ -50,13 +53,19 @@ const PoolToggleButton: React.FC<ButtonGroupProps> = (props: ButtonGroupProps) =
         onClick={() => onTypeChange("add")}
         variant={poolType === "add" ? "contained" : "outlined"}
         className={classes.tab}>
-        Add
+        Add Liquidity
       </Button>
-      <Button
+    {/* <Button
         onClick={() => onTypeChange("manage")}
         variant={poolType === "manage" ? "contained" : "outlined"}
         className={classes.tab}>
         Manage
+      </Button> */}
+      <Button
+        onClick={() => onTypeChange("addSponsor")}
+        variant={poolType === "addSponsor" ? "contained" : "outlined"}
+        className={classes.tab}>
+        Remove Liquidity
       </Button>
     </ButtonGroup>
   );
