@@ -4,9 +4,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import cls from "classnames";
 import { Link } from "react-router-dom";
 import { Brand } from "app/components/TopBar/components";
-import RewardsInfoButton from "app/layouts/RewardsInfoButton";
+// import RewardsInfoButton from "app/layouts/RewardsInfoButton";
 import ConnectWalletButton from "../ConnectWalletButton";
-//import { ReactComponent as MenuIcon } from "./menu.svg";
+// import { ReactComponent as MenuIcon } from "./menu.svg";
 import { TopBarProps } from "./types";
 
 const useStyles = makeStyles(theme => ({
@@ -89,7 +89,7 @@ const TopBar: React.FC<TopBarProps & React.HTMLAttributes<HTMLDivElement>> = (pr
           </Button>
         </Box>
         <Box display="flex" flex={1} justifyContent="flex-end" alignItems="center">
-          <RewardsInfoButton />
+    {/* <RewardsInfoButton /> */}
           <Hidden xsDown>
             <ConnectWalletButton />
           </Hidden>

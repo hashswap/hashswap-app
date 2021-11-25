@@ -2,22 +2,22 @@ import React from "react";
 import {
   Box,
   DialogContent,
-  Link,
-  Typography,
+//  Link,
+//  Typography,
   useTheme,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import WarningOutlinedIcon from "@material-ui/icons/WarningOutlined";
+// import WarningOutlinedIcon from "@material-ui/icons/WarningOutlined";
 import cls from "classnames";
 import { ConnectOptionType } from "core/wallet";
-import { NotificationBox } from "app/components";
+// import { NotificationBox } from "app/components";
 import { AppTheme } from "app/theme/types";
 import { useSearchParam } from "app/utils";
-import { ReactComponent as BoltXIcon } from "./boltx.svg";
+// import { ReactComponent as BoltXIcon } from "./boltx.svg";
 import { ConnectWalletOption } from "./components";
 import { ReactComponent as PrivateKeyIconDark } from "./private-key-dark.svg";
 import { ReactComponent as PrivateKeyIcon } from "./private-key.svg";
-import { ReactComponent as ZeevesIcon } from "./zeeves.svg";
+// import { ReactComponent as ZeevesIcon } from "./zeeves.svg";
 import { ReactComponent as ZilPayIcon } from "./zilpay.svg";
 
 export interface ConnectWalletProps {
@@ -89,7 +89,7 @@ const ConnectWallet: React.FC<
           buttonText="Connect ZilPay"
           onSelect={() => onSelectConnectOption("zilpay")}
         />
-        <ConnectWalletOption
+    {/* <ConnectWalletOption
           label="BoltX"
           icon={BoltXIcon}
           secureLevel={4}
@@ -102,7 +102,7 @@ const ConnectWallet: React.FC<
           secureLevel={4}
           buttonText="Connect Zeeves"
           onSelect={() => onSelectConnectOption("zeeves")}
-        />
+        /> */}
         {showPrivateKeyOption && (
           <ConnectWalletOption
             label="Private Key"
@@ -117,7 +117,7 @@ const ConnectWallet: React.FC<
           />
         )}
 
-        <NotificationBox
+    {/* <NotificationBox
           className={classes.rounded}
           IconComponent={WarningOutlinedIcon}
           marginTop={2}
@@ -146,9 +146,9 @@ const ConnectWallet: React.FC<
               to learn more.
             </Typography>
           </Box>
-        </NotificationBox>
+        </NotificationBox> */}
       </DialogContent>
-      <DialogContent className={classes.extraSpacious}>
+    {/* <DialogContent className={classes.extraSpacious}>
         <Typography color="textPrimary" variant="body2" align="center">
           No wallet yet?
           <br />
@@ -174,7 +174,7 @@ const ConnectWallet: React.FC<
           </Link>
           , a Telegram-based wallet.
         </Typography>
-      </DialogContent>
+      </DialogContent> */}
     </Box>
   );
 };
